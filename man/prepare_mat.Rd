@@ -27,5 +27,5 @@ From a long format matrix to a a wide format matrix.
 nav <- read.csv(system.file("csv/nav.csv", package = "flows"))
 # Prepare data
 myflows <- prepare_mat(x = nav, i = "i", j = "j", fij = "fij")
-myflows[1:5,1:5]
+myflows[1:5, 1:5]
 }

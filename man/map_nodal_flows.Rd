@@ -67,10 +67,12 @@ mat <- prepare_mat(x = nav, i = "i", j = "j", fij = "fij")
 UA <- st_read(system.file("gpkg/GE.gpkg", package = "flows"), layer = "urban_area")
 GE <- st_read(system.file("gpkg/GE.gpkg", package = "flows"), layer = "region")
 mf_map(GE)
-map_nodal_flows(mat = mat, x = UA,
-                 col_node = c('red', 'orange', 'yellow'),
-                 col_flow = "grey30",
-                 breaks = c(4,100,1000,2500,8655),
-                 lwd = c(1,4,8,16), add = TRUE)
+map_nodal_flows(
+  mat = mat, x = UA,
+  col_node = c("red", "orange", "yellow"),
+  col_flow = "grey30",
+  breaks = c(4, 100, 1000, 2500, 8655),
+  lwd = c(1, 4, 8, 16), add = TRUE
+)
 mf_title("Dominant flows")
 }

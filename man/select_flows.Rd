@@ -61,7 +61,7 @@ sum(res)
 # Select the flows greater than 5000
 res <- select_flows(mat = mat, method = "xfirst", k = 5000)
 r <- mat * res
-r[r>0]
+r[r > 0]
 
 # Select as many flows as necessary for each origin so that their sum is at least equal to 500.
 res <- select_flows(mat = mat, method = "xsumfirst", global = FALSE, k = 500)
@@ -74,7 +74,7 @@ r <- mat * res
 sum(rowSums(r))
 
 # Select dominant flows
-m <- mat[1:5,1:5]
+m <- mat[1:5, 1:5]
 ws <- colSums(m)
 res <- select_flows(mat = m, method = "dominant", k = 1, w = ws)
 # 2nd element has a lower weight than 3rd element (ratio > 1)

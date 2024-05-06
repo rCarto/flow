@@ -19,5 +19,5 @@ Perform a Nystuen & Dacey's dominants flows analysis.
 nav <- read.csv(system.file("csv/nav.csv", package = "flows"))
 mat <- prepare_mat(x = nav, i = "i", j = "j", fij = "fij")
 res <- nodal_flows(mat)
-res[1:5,1:5]
+res[1:5, 1:5]
 }

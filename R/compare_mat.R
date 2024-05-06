@@ -28,23 +28,31 @@
 #' # Compare flow matrices
 #' compare_mat(mat1 = mat, mat2 = flowSel, digits = 1)
 #' @export
-compare_mat <- function(mat1, mat2, digits = 0){
+compare_mat <- function(mat1, mat2, digits = 0) {
   x1 <- stat_mat(mat1, output = "none", verbose = FALSE)
   x2 <- stat_mat(mat2, output = "none", verbose = FALSE)
-  compdf <- data.frame(mat1= c(x1$nblinks, x1$sumflows, x1$connectcompx,
-                               x1$min, x1$Q1, x1$median, x1$Q3,
-                               x1$max, x1$mean, x1$sd),
-                       mat2= c(x2$nblinks, x2$sumflows,x2$connectcompx,
-                               x2$min, x2$Q1, x2$median, x2$Q3,
-                               x2$max, x2$mean, x2$sd),
-                       row.names = c("nblinks","sumflows", "connectcompx",
-                                     "min", "Q1", "median", "Q3",
-                                     "max", "mean", "sd"))
+  compdf <- data.frame(
+    mat1 = c(
+      x1$nblinks, x1$sumflows, x1$connectcompx,
+      x1$min, x1$Q1, x1$median, x1$Q3,
+      x1$max, x1$mean, x1$sd
+    ),
+    mat2 = c(
+      x2$nblinks, x2$sumflows, x2$connectcompx,
+      x2$min, x2$Q1, x2$median, x2$Q3,
+      x2$max, x2$mean, x2$sd
+    ),
+    row.names = c(
+      "nblinks", "sumflows", "connectcompx",
+      "min", "Q1", "median", "Q3",
+      "max", "mean", "sd"
+    )
+  )
 
-  compdf$absdiff <- abs(compdf$mat1-compdf$mat2)
-  compdf[4:10,"absdiff"] <- NA
-  compdf$reldiff <- abs(compdf$mat1-compdf$mat2) / compdf$mat1 * 100
-  compdf[3:10,"reldiff"] <- NA
+  compdf$absdiff <- abs(compdf$mat1 - compdf$mat2)
+  compdf[4:10, "absdiff"] <- NA
+  compdf$reldiff <- abs(compdf$mat1 - compdf$mat2) / compdf$mat1 * 100
+  compdf[3:10, "reldiff"] <- NA
 
   print(round(compdf, digits))
   return(invisible(compdf))

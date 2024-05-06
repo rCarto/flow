@@ -53,7 +53,7 @@
 #' mystats <- stat_mat(mat = myflows, output = "none", verbose = FALSE)
 #' str(mystats)
 #' @export
-stat_mat <- function(mat, output = "all", verbose = TRUE){
+stat_mat <- function(mat, output = "all", verbose = TRUE) {
   nbcell <- length(mat)
   matdim <- dim(mat)[1]
   sumflows <- sum(mat)
@@ -63,57 +63,69 @@ stat_mat <- function(mat, output = "all", verbose = TRUE){
   vmat <- as.vector(mat[mat > 0])
   vmat <- vmat[order(vmat, decreasing = FALSE)]
   sumflows <- sum(vmat)
-  vmatcs <- cumsum(vmat) /  sumflows * 100
+  vmatcs <- cumsum(vmat) / sumflows * 100
   summaryflows <- summary(vmat)
   summaryflows <- c(summaryflows, sd(vmat))
   names(summaryflows) <- NULL
 
-  #prep graph
+  # prep graph
   deg <- rowSums(matbool)
   deg2 <- rowSums(mat)
   # df output
-  degdf <- data.frame(id=names(deg), degree = deg, wdegree = deg2, stringsAsFactors = FALSE)
-  deg <- deg[deg>0]
-  deg2 <- deg2[deg2>0]
+  degdf <- data.frame(id = names(deg), degree = deg, wdegree = deg2, stringsAsFactors = FALSE)
+  deg <- deg[deg > 0]
+  deg2 <- deg2[deg2 > 0]
 
-  if(output=="degree"){
-    plot(deg[order(deg, decreasing = TRUE)], type = "l", log = "xy",
-         xlab = "rank (log)", ylab = "size (log nb. flows)")
+  if (output == "degree") {
+    plot(deg[order(deg, decreasing = TRUE)],
+      type = "l", log = "xy",
+      xlab = "rank (log)", ylab = "size (log nb. flows)"
+    )
     title("rank - size")
   }
-  if(output=="wdegree"){
-    plot(deg2[order(deg2, decreasing = TRUE)], type = "l", log = "xy",
-         xlab = "rank (log)", ylab = "size (log flow intensity)")
+  if (output == "wdegree") {
+    plot(deg2[order(deg2, decreasing = TRUE)],
+      type = "l", log = "xy",
+      xlab = "rank (log)", ylab = "size (log flow intensity)"
+    )
     title("rank - size (weighted)")
   }
-  if(output=="lorenz"){
-    plot( y = vmatcs, x = seq(0,100,length.out = length(vmatcs)), type = "l",
-          xlim = c(0,100), ylim = c(0,100),
-          xlab = "cum. nb. flows", ylab = "cum. intensity of flows")
-    title ("Lorenz Curve")
+  if (output == "lorenz") {
+    plot(
+      y = vmatcs, x = seq(0, 100, length.out = length(vmatcs)), type = "l",
+      xlim = c(0, 100), ylim = c(0, 100),
+      xlab = "cum. nb. flows", ylab = "cum. intensity of flows"
+    )
+    title("Lorenz Curve")
   }
-  if(output=="boxplot"){
-    boxplot(as.vector(mat[mat>0]), log = "y")
+  if (output == "boxplot") {
+    boxplot(as.vector(mat[mat > 0]), log = "y")
     title("Boxplot")
   }
-  if(output=="all"){
+  if (output == "all") {
     ## graphic outputs
-    old.par <- par (mfrow = c(2,2))
+    old.par <- par(mfrow = c(2, 2))
     ## rank-size link
-    plot(deg[order(deg, decreasing = TRUE)], type = "l", log = "xy",
-         xlab = "rank (log)", ylab = "size (log nb. flows)")
+    plot(deg[order(deg, decreasing = TRUE)],
+      type = "l", log = "xy",
+      xlab = "rank (log)", ylab = "size (log nb. flows)"
+    )
     title("rank - size")
     ## rank size flow
-    plot(deg2[order(deg2, decreasing = TRUE)], type = "l", log = "xy",
-         xlab = "rank (log)", ylab = "size (log flow intensity)")
+    plot(deg2[order(deg2, decreasing = TRUE)],
+      type = "l", log = "xy",
+      xlab = "rank (log)", ylab = "size (log flow intensity)"
+    )
     title("rank - size (weighted)")
-    ##lorenz
-    plot( y = vmatcs, x = seq(0,100,length.out = length(vmatcs)), type = "l",
-          xlim = c(0,100), ylim = c(0,100),
-          xlab = "cum. nb. flows", ylab = "cum. intensity of flows")
-    title ("Lorenz Curve")
+    ## lorenz
+    plot(
+      y = vmatcs, x = seq(0, 100, length.out = length(vmatcs)), type = "l",
+      xlim = c(0, 100), ylim = c(0, 100),
+      xlab = "cum. nb. flows", ylab = "cum. intensity of flows"
+    )
+    title("Lorenz Curve")
     ## boxplot
-    boxplot(as.vector(mat[mat>0]), log = "y")
+    boxplot(as.vector(mat[mat > 0]), log = "y")
     title("Boxplot")
     par(old.par)
   }
@@ -122,48 +134,52 @@ stat_mat <- function(mat, output = "all", verbose = TRUE){
   g <- igraph::graph.adjacency(adjmatrix = mat, mode = "directed", weighted = TRUE)
   clustg <- igraph::clusters(graph = g, mode = "weak")
   connectcomp <- clustg$no
-  connectcompx <- length(clustg$csize[clustg$csize>1])
-  compocomp <-  data.frame(id = V(g)$name, idcomp = clustg$membership, stringsAsFactors = FALSE)
+  connectcompx <- length(clustg$csize[clustg$csize > 1])
+  compocomp <- data.frame(id = V(g)$name, idcomp = clustg$membership, stringsAsFactors = FALSE)
   compocompw <- merge(compocomp, degdf, by = "id")
-  compw <- aggregate(x = compocompw$wdegree,by = list(compocompw$idcomp),
-                     FUN = sum)
-  sizecomp <- data.frame(idcomp = seq(1, length(clustg$csize)),
-                         sizecomp = clustg$csize, wcomp = compw$x)
+  compw <- aggregate(
+    x = compocompw$wdegree, by = list(compocompw$idcomp),
+    FUN = sum
+  )
+  sizecomp <- data.frame(
+    idcomp = seq(1, length(clustg$csize)),
+    sizecomp = clustg$csize, wcomp = compw$x
+  )
 
-  if (verbose == TRUE){
+  if (verbose == TRUE) {
     ## stat cat
-    cat('matrix dimension:', matdim, "X", matdim,"\n" )
-    cat('nb. links:', nbcellfull, "\n" )
-    cat('density:', nbcellfull/(nbcell - matdim), "\n" )
-    cat('nb. of components (weak)', connectcomp, "\n")
+    cat("matrix dimension:", matdim, "X", matdim, "\n")
+    cat("nb. links:", nbcellfull, "\n")
+    cat("density:", nbcellfull / (nbcell - matdim), "\n")
+    cat("nb. of components (weak)", connectcomp, "\n")
     cat("nb. of components (weak, size > 1)", connectcompx, "\n")
-    cat('sum of flows:', sumflows, "\n")
-    cat('min:', summaryflows[1] ,"\n")
-    cat('Q1:', summaryflows[2] ,"\n")
-    cat('median:', summaryflows[3] ,"\n")
-    cat('Q3:', summaryflows[5] ,"\n")
-    cat('max:', summaryflows[6] ,"\n")
-    cat('mean:', summaryflows[4] ,"\n")
-    cat('sd:', summaryflows[7] ,"\n")
+    cat("sum of flows:", sumflows, "\n")
+    cat("min:", summaryflows[1], "\n")
+    cat("Q1:", summaryflows[2], "\n")
+    cat("median:", summaryflows[3], "\n")
+    cat("Q3:", summaryflows[5], "\n")
+    cat("max:", summaryflows[6], "\n")
+    cat("mean:", summaryflows[4], "\n")
+    cat("sd:", summaryflows[7], "\n")
   }
   ## stat list
-  matstat <- list(matdim = dim(mat),
-                  nblinks = nbcellfull,
-                  density = nbcellfull/(nbcell - matdim),
-                  connectcomp = connectcomp,
-                  connectcompx = connectcompx,
-                  sizecomp = sizecomp,
-                  compocomp = compocomp,
-                  degrees = degdf,
-                  sumflows = sumflows,
-                  min =  summaryflows[1],
-                  Q1 =  summaryflows[2],
-                  median = summaryflows[3],
-                  Q3 = summaryflows[5],
-                  max = summaryflows[6],
-                  mean = summaryflows[4],
-                  sd = summaryflows[7]
+  matstat <- list(
+    matdim = dim(mat),
+    nblinks = nbcellfull,
+    density = nbcellfull / (nbcell - matdim),
+    connectcomp = connectcomp,
+    connectcompx = connectcompx,
+    sizecomp = sizecomp,
+    compocomp = compocomp,
+    degrees = degdf,
+    sumflows = sumflows,
+    min = summaryflows[1],
+    Q1 = summaryflows[2],
+    median = summaryflows[3],
+    Q3 = summaryflows[5],
+    max = summaryflows[6],
+    mean = summaryflows[4],
+    sd = summaryflows[7]
   )
   return(invisible(matstat))
-
 }

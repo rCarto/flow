@@ -12,27 +12,27 @@
 #' nav <- read.csv(system.file("csv/nav.csv", package = "flows"))
 #' # Prepare data
 #' myflows <- prepare_mat(x = nav, i = "i", j = "j", fij = "fij")
-#' myflows[1:5,1:5]
+#' myflows[1:5, 1:5]
 #' @export
-prepare_mat <- function(x, i, j, fij){
-  mat <- x[,c(i,j,fij)]
+prepare_mat <- function(x, i, j, fij) {
+  mat <- x[, c(i, j, fij)]
   names(mat) <- c("i", "j", "fij")
-  listUnits <- unique(c(unique(mat$i),unique(mat$j)))
-  matfinal <- matrix(nrow = length(listUnits), ncol = length(listUnits),
-                     dimnames = list(listUnits, listUnits))
+  listUnits <- unique(c(unique(mat$i), unique(mat$j)))
+  matfinal <- matrix(
+    nrow = length(listUnits), ncol = length(listUnits),
+    dimnames = list(listUnits, listUnits)
+  )
   dmat <- reshape(mat, direction = "wide", idvar = "i", timevar = "j", sep = "_x_")
   row.names(dmat) <- dmat[, 1]
   dmat <- dmat[, -1]
   dmat <- as.matrix(dmat)
   colnames(dmat) <- unlist(lapply(
     (strsplit(colnames(dmat), split = "_x_", fixed = TRUE)),
-    function(x)x[2])
-  )
+    function(x) x[2]
+  ))
   i <- factor(row.names(dmat), levels = row.names(dmat))
   j <- factor(colnames(dmat), levels = colnames(dmat))
   matfinal[levels(i), levels(j)] <- dmat
   matfinal[is.na(matfinal)] <- 0
   return(matfinal)
 }
-
-

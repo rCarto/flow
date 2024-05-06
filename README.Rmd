@@ -6,7 +6,7 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/", 
+  fig.path = "man/figures/",
   fig.width = 7, fig.height = 8,
   dev = "png"
 )
@@ -53,20 +53,26 @@ nav <- read.csv(system.file("csv/nav.csv", package = "flows"))
 # Trnasform to wide
 mat <- prepare_mat(x = nav, i = "i", j = "j", fij = "fij")
 # import spatial objects
-UA <- st_read(system.file("gpkg/GE.gpkg", package = "flows"), 
-              layer = "urban_area", quiet = TRUE)
-GE <- st_read(system.file("gpkg/GE.gpkg", package = "flows"), 
-              layer = "region", quiet = TRUE)
+UA <- st_read(system.file("gpkg/GE.gpkg", package = "flows"),
+  layer = "urban_area", quiet = TRUE
+)
+GE <- st_read(system.file("gpkg/GE.gpkg", package = "flows"),
+  layer = "region", quiet = TRUE
+)
 # Map
 mf_map(GE, col = "#c6deba")
-out <- map_nodal_flows(mat = mat, x = UA,
-                       inches = .17,
-                       col_node = c('red', 'orange', 'yellow'),
-                       col_flow = "grey30",
-                       breaks = c(4,100,1000,2500,8655),
-                       lwd = c(1,4,8,16), add = TRUE)
-mf_label(out$nodes[out$nodes$w>6000,], var = 'name',
-         halo = TRUE, overlap = FALSE, pos = 4)
+out <- map_nodal_flows(
+  mat = mat, x = UA,
+  inches = .17,
+  col_node = c("red", "orange", "yellow"),
+  col_flow = "grey30",
+  breaks = c(4, 100, 1000, 2500, 8655),
+  lwd = c(1, 4, 8, 16), add = TRUE
+)
+mf_label(out$nodes[out$nodes$w > 6000, ],
+  var = "name",
+  halo = TRUE, overlap = FALSE, pos = 4
+)
 mf_title("Dominant Flows of Commuters")
 mf_credits("INSEE, 2011")
 mf_scale(50)
